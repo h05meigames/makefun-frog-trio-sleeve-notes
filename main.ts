@@ -18,6 +18,15 @@ const BLURB =
 
 const text = `${TITLE}\n${BLURB}`;
 
+// Gate guard: the sealed scorer only accepts 1–400 characters, counted in
+// code points (not UTF-16 units), so fail loudly instead of writing an
+// over-long entry that would score 0.
+if ([...text].length > 400) {
+  throw new Error(
+    `entry is ${[...text].length} characters, over the 400-character limit`,
+  );
+}
+
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "entry.txt"), text, "utf8");
